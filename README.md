@@ -1,2 +1,7 @@
-# MeetingRoom_Reservation
-- 회의실 예약 시스템
+# 회의실 예약 시스템
+- SpringBoot + Gradle + Oracle dbms
+- 계정 권한 : 관리자 / 일반
+- 회의실 예약 조회
+- 회의실 예약 요청
+- 요청 확인 (관리자)
+- 회의실 설정 (관리자)
