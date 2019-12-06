@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="includes/header"></th:block>
+<!-- Begin Page Content -->
+        <div class="container-fluid">
+        
+          <!-- 404 Error Text -->
+          <div class="text-center">
+            <div class="error mx-auto" data-text="Access Denied">Access Denied</div>
+            <p class="lead text-gray-800 mb-5" th:value="${msg}" ></p>
+            <p class="text-gray-500 mb-0">It looks like you found a glitch in the matrix...</p>
+            <a href="/board/list">&larr; Back to Dashboard</a>
+          </div>
+
+        </div>
+<!-- /.container-fluid -->
+<th:block th:replace="includes/footer"></th:block>
+</html>

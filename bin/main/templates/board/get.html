@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<th:block th:replace="includes/header"></th:block>
+
+<div class="container-fluid">
+	<h1 class="h3 mb-2 text-gray-800">Board Read</h1>
+	<div class="card shadow mb-4">
+		<div class="card-header py-3">
+        	<h6 class="m-0 font-weight-bold text-primary">Board Read Page</h6>
+        </div>
+        <div class="card-body">
+        	<div class="form-group">
+       			<label>Bno</label>
+       			<input class="form-control" name='bno' th:value="${board.bno}" readonly="readonly">
+       		</div>
+       		<div class="form-group">
+       			<label>Title</label>
+       			<input class="form-control" name='title' th:value="${board.title}" readonly="readonly">
+       		</div>
+       		<hr>
+    		<div class="form-group" id='calendar'></div>
+       		<div class="form-group">
+       			<label>Text area</label>
+       			<textarea class="form-control" rows="3" name='content' th:text="*{board.content}" readonly="readonly"></textarea>
+       		</div>
+       		<div class="form-group">
+       			<label>Writer</label>
+       			<input class="form-control" name='writer' th:value="${board.writer}" readonly="readonly">
+       		</div>
+       		<button data-oper='modify' class="btn btn-primary btn-icon-split" sec:authorize="isAuthenticated()" th:if="${#authentication.principal.username eq board.writer}">
+       			<span class="text">Modify</span>
+       		</button>
+       		<button data-oper='schedule' class="btn btn-primary btn-icon-split" sec:authorize="isAuthenticated()">
+       			<span class="text">Add Schedule</span>
+       		</button>
+       		<button data-oper='list' class="btn btn-info btn-icon-split">
+       			<span class="text">List</span>
+       		</button>
+       		<form id='operForm' action="/board/modify" method="get">
+       			<input type='hidden' id='bno' name='bno' th:value="${board.bno}">
+       		</form>
+        </div>
+	</div>
+	<div class="card shadow mb-4">
+		<div class="card-header py-3">
+        	<i class="fa fa-comments fa-fw"></i>Reply
+        </div>
+         <div class="card-body">
+			<div class="form-group">
+				<textarea class="form-control" id='reply' rows="3" placeholder="Leave comments here"></textarea>
+			</div>
+			<button id='replyRegisterBtn' type="submit" class="btn btn-success btn-icon-split fa-pull-right" sec:authorize="isAuthenticated()">
+				<span class="text"><i class="fa fa-share"></i> Register</span>
+			</button>
+		</div>
+		<hr>
+        <div class="card-body">
+        	<ul class="chat" style="list-style-type:none; padding-left:15px;">
+        	</ul>
+        	<div class="panel-footer">
+        	</div>
+        </div>
+	</div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function(){
+	
+	getSchedules();
+	
+	var operForm=$("#operForm");
+	
+	/*<![CDATA[*/ 
+		var bnoValue = /*[[ ${board.bno} ]]*/; 
+	/*]]>*/
+	
+	showList(1);
+		
+	$("button[data-oper='modify']").on("click",function(e){
+		operForm.attr("action","/board/modify").submit();
+	});
+	
+	$("button[data-oper='schedule']").on("click",function(e){
+		operForm.attr("action","/board/schedule").submit();
+	});
+	
+	$("button[data-oper='list']").on("click",function(e){
+		operForm.find("#bno").remove();
+		operForm.attr("action","/board/list");
+		operForm.submit();
+	});	
+	
+	var replyer=null;
+	/*[# sec:authorize="isAuthenticated()"]*/
+	    replyer=/*[[ ${#authentication.principal.username} ]]*/;
+	/*[/]*/
+	var header = $("meta[name='_csrf_header']").attr("content");
+	var token = $("meta[name='_csrf']").attr("content");
+	$("#replyRegisterBtn").on("click",function(e){
+		var reply={
+				reply:$("#reply").val(),
+				replyer:replyer,
+				bno:bnoValue,
+				csrf_header:header,
+				csrf_token:token
+				};
+		
+		replyService.add(
+			reply
+			,
+			function(result){
+				alert(result);
+				$("#reply").val("");
+				showList(-1);
+			}
+			,
+			function(error){
+				alert(error);
+			}
+		);
+	});
+	
+	replyPageFooter.on("click","li a",function(e){
+		e.preventDefault();
+		console.log("page click");
+		
+		var targetPageNum=$(this).attr("href");
+		console.log("targetPageNum: "+targetPageNum);
+		pageNum=targetPageNum;
+		showList(pageNum);
+	});
+});
+</script>
+
+<script src="https://momentjs.com/downloads/moment.js"></script>
+<script type="text/javascript" src="/js/reply.js"></script>
+<script type="text/javascript" th:inline="javascript">
+
+	/*<![CDATA[*/ 
+		var bnoValue = /*[[ ${board.bno} ]]*/; 
+	/*]]>*/
+	  
+	var replyUL=$(".chat");
+	
+	var replyer=null;
+	/*[# sec:authorize="isAuthenticated()"]*/
+	    replyer=/*[[ ${#authentication.principal.username} ]]*/;
+	/*[/]*/
+	function showList(page){
+	console.log("show replies "+page);
+	replyService.getReplies(
+		{bno:bnoValue,page:page||1}
+		,
+		function(replyCnt,list){
+			var replyCnt=replyCnt;
+			var list=list;
+			
+			console.log("replyCnt: "+replyCnt);
+			console.log("replies:");
+			console.log(list);
+			
+			if(page==-1){
+				pageNum=Math.ceil(replyCnt/10.0);
+				showList(pageNum);
+				return;
+			}
+					
+			var str="";
+			if(list==null||list.length==0){
+				replyUL.html("");
+				replyPageFooter.html("");
+				return;
+			}
+			for(var i=0,len=list.length||0;i<len;i++){
+				var date=displayTime(list[i].replyDate);
+				str+="<li id='"+list[i].rno+"'>";
+				str+="<div><div class='header'>";
+				str+="<strong class='primary-font'>"+list[i].replyer+"</strong>";
+				if(list[i].replyer==replyer){
+					str+="<a href='javascript:void(0)' onclick='editReply("+list[i].rno+",\""+list[i].replyer+"\",\""+list[i].reply+"\")' style='padding-left:15px'>수정</a>";
+					str+="<a href='javascript:void(0)' onclick='removeReply("+list[i].rno+")' style='padding-left:15px;'>삭제</a>";
+				}
+				str+="<small class='fa-pull-right text-muted'>"+date+"</small></div>";
+				str+="<p>"+list[i].reply+"</p><hr></div></li>";
+			}
+			replyUL.html(str);
+			showReplyPage(replyCnt);
+		}
+		,
+		function(error){
+			alert(error);
+		});
+	}
+	
+	//�뙎湲� �럹�씠吏�
+	var pageNum=1;
+	var replyPageFooter=$(".panel-footer");
+	function showReplyPage(replyCnt){
+		var endNum=Math.ceil(pageNum/10.0)*10;
+		var startNum=endNum-9;
+		var prev=startNum!=1;
+		var next=false;
+		
+		if(endNum*10>=replyCnt){
+			endNum=Math.ceil(replyCnt/10.0);
+		}
+		
+		if(endNum*10<replyCnt){
+			next=true;
+		}
+		
+		var str="<ul class='pagination fa-pull-right'>";
+		
+		if(prev){
+			str+="<li class='page-item'><a class='page-link' href='"+(startNum-1)+"'>Previous</a></li>";
+		}
+		
+		for(var i=startNum;i<=endNum;i++){
+			var active=pageNum==i?"active":"";
+			str+="<li class='page-item "+active+" '><a class='page-link' href='"+i+"'>"+i+"</a></li>";
+		}
+		
+		if(next){
+			str+="<li class='page-item "+active+" '><a class='page-link' href='"+(endNum+1)+"'>"+Next+"</a></li>";
+		}
+		
+		str+="</ul></div>";
+			
+		replyPageFooter.html(str);	
+	}
+	
+	function displayTime(time){
+		var today=moment(new Date());
+		var gap=moment.duration(today.diff(time)).asHours()
+		var dateObj=new Date(time);
+				
+		if(gap<12){
+			return moment(time).format('h:mm:ss a');
+		}else{
+			return moment(time).format('YYYY-MM-DD');
+		}
+	}
+	
+	function editReply(rno,writer,content){
+		var str="";
+		var reply=$("#"+rno);
+		
+		str+="<li id='"+rno+"'>";
+		str+="<div class='header'>";
+		str+="<strong class='primary-font'>"+writer+"</strong>";
+		str+="<a href='javascript:void(0)' onclick='updateReply("+rno+")' style='padding-left:15px;'>수정</a>";
+		str+="<a href='javascript:void(0)' onclick='showList("+pageNum+")' style='padding-left:15px;'>취소</a>";
+		str+="<div class='form-group'><textarea id='updated' class='form-control'>"+content+"</textarea></div><hr></div></li>";
+		
+		reply.html(str);
+	}
+	
+	var header = $("meta[name='_csrf_header']").attr("content");
+	var token = $("meta[name='_csrf']").attr("content");
+	
+	function removeReply(rno){
+		var reply={
+			rno:rno,
+			replyer:replyer,
+			csrf_header:header,
+			csrf_token:token
+		};
+		replyService.remove(
+			reply
+			,
+			function(result){
+				alert(result);
+				$("#reply").val("");
+				showList(pageNum);
+			}
+			,
+			function(error){
+				alert(error);
+			}
+		);
+	}
+	function updateReply(rno){
+		var reply={
+			rno:rno,
+			reply:$("#updated").val(),
+			replyer:replyer,
+			bno:bnoValue,
+			csrf_header:header,
+			csrf_token:token
+		};
+		replyService.update(
+			reply
+			,
+			function(result){
+				alert(result);
+				$("#reply").val("");
+				showList(pageNum);
+			}
+			,
+			function(error){
+				alert(error);
+			}
+		);
+	}
+	  
+</script>
+<th:block th:replace="includes/footer"></th:block>
+</html>

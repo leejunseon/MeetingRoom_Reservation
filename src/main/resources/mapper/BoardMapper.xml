@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="practice.mapper.BoardMapper">
+
+	<select id="getList" resultType="practice.domain.BoardVO">
+		<![CDATA[
+			SELECT
+				BNO,TITLE,CONTENT,WRITER,REGDATE,UPDATEDATE,REPLYCNT
+			from(
+				SELECT /*+ INDEX_DESC(TBL_BOARD PK_BOARD) */
+					ROWNUM RN,BNO,TITLE,CONTENT,WRITER,REGDATE,UPDATEDATE,REPLYCNT
+				FROM
+				]]>
+				<choose>
+					<when test="orderNum==null">
+						TBL_BOARD
+					</when>
+					<when test="orderNum!=null">
+					(
+						SELECT /*+ INDEX_DESC(TBL_BOARD PK_BOARD) */
+                			ROWNUM RN,BNO,TITLE,CONTENT,WRITER,REGDATE,UPDATEDATE,REPLYCNT
+            			FROM
+                			TBL_BOARD
+                			<if test="search!=''">
+								 WHERE
+            						(BNO LIKE '%'||#{search}||'%' OR 
+            						 TITLE LIKE '%'||#{search}||'%' OR 
+            						 WRITER LIKE '%'||#{search}||'%' OR 
+            						 CONTENT LIKE '%'||#{search}||'%')
+							</if>
+	          				<choose>
+								<when test="orderNum!=null">
+									<choose>
+										<when test="orderNum=='0'.toString()">
+											ORDER BY BNO
+										</when>
+										<when test="orderNum=='1'.toString()">
+											ORDER BY TITLE
+										</when>
+										<when test="orderNum=='2'.toString()">
+											ORDER BY WRITER
+										</when>
+										<when test="orderNum=='3'.toString()">
+											ORDER BY REGDATE
+										</when>
+										<when test="orderNum=='4'.toString()">
+											ORDER BY UPDATEDATE
+										</when>
+									</choose>
+									
+									<choose>
+										<when test="orderDir=='asc'">
+											ASC
+										</when>
+										<when test="orderDir='desc'">
+											DESC
+										</when>
+									</choose>
+								</when>
+							</choose>
+						)
+					</when>
+				</choose>
+				<![CDATA[
+				WHERE ROWNUM<= #{start} + #{length}
+			)
+			WHERE RN> #{start}
+		]]>
+	</select>
+	
+	<insert id="insert">
+		<selectKey keyProperty="bno" order="BEFORE" resultType="long">
+			SELECT SEQ_BOARD.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO TBL_BOARD(BNO,TITLE,CONTENT,WRITER)
+		VALUES(#{bno},#{title},#{content},#{writer})
+	</insert>
+
+	<select id="read" resultType="practice.domain.BoardVO">
+		SELECT * FROM TBL_BOARD WHERE BNO=#{bno}
+	</select>
+	
+	<delete id="delete">
+		DELETE TBL_BOARD WHERE BNO=#{bno}
+	</delete>
+	
+	<update id="update">
+		UPDATE
+			TBL_BOARD
+		SET
+			TITLE=#{title},
+			CONTENT=#{content},
+			WRITER=#{writer},
+			UPDATEDATE=sysdate
+		WHERE
+			BNO=#{bno}
+	</update>
+	
+	<select id="getTotal" resultType="int">
+		SELECT COUNT(*) 
+		FROM TBL_BOARD
+		WHERE BNO>0
+	</select>
+	
+	<update id="updateReplyCnt">
+		update tbl_board
+		set replycnt=replycnt+#{amount}
+		where bno=#{bno}
+	</update>
+	
+</mapper>

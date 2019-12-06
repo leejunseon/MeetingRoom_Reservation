@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="practice.mapper.ScheduleMapper">
+
+	<insert id="add">
+		INSERT 
+			INTO TBL_SCHEDULE(SNO,BNO,WRITER,TITLE,START_TIME,END_TIME)
+		VALUES 
+			(SEQ_REPLY.NEXTVAL, #{bno},#{writer},#{title},#{startTime},#{endTime})
+	</insert>
+	
+	<select id="get" resultType="practice.domain.ScheduleVO">
+	<![CDATA[
+		SELECT *
+		FROM 
+			TBL_SCHEDULE
+		WHERE
+			#{start}<=START_TIME and START_TIME<=#{end}
+		OR
+			#{start}<=END_TIME and END_TIME<=#{end}
+	]]>	
+	</select>
+	
+	<update id="update">
+		UPDATE TBL_SCHEDULE
+		SET
+			TITLE=#{title},
+			START_TIME=#{startTime},
+			END_TIME=#{endTime}
+		WHERE SNO=#{sno}
+	</update>
+	
+	<delete id="remove">
+		DELETE FROM TBL_SCHEDULE WHERE SNO=#{sno}
+	</delete>
+	
+</mapper>
