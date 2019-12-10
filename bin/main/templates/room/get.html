@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<th:block th:replace="includes/header"></th:block>
+
+<div class="container-fluid">
+	<h1 class="h3 mb-2 text-gray-800">Board Read</h1>
+	<div class="card shadow mb-4">
+		<div class="card-header py-3">
+        	<h6 class="m-0 font-weight-bold text-primary">Board Read Page</h6>
+        </div>
+        <div class="card-body">
+        	<div class="form-group">
+       			<label>Bno</label>
+       			<input class="form-control" name='bno' th:value="${board.bno}" readonly="readonly">
+       		</div>
+       		<div class="form-group">
+       			<label>Title</label>
+       			<input class="form-control" name='title' th:value="${board.title}" readonly="readonly">
+       		</div>
+       		<hr>
+    		<div class="form-group" id='calendar'></div>
+       		<div class="form-group">
+       			<label>Text area</label>
+       			<textarea class="form-control" rows="3" name='content' th:text="*{board.content}" readonly="readonly"></textarea>
+       		</div>
+       		<div class="form-group">
+       			<label>Writer</label>
+       			<input class="form-control" name='writer' th:value="${board.writer}" readonly="readonly">
+       		</div>
+       		<button data-oper='modify' class="btn btn-primary btn-icon-split" sec:authorize="isAuthenticated()" th:if="${#authentication.principal.username eq board.writer}">
+       			<span class="text">Modify</span>
+       		</button>
+       		<button data-oper='schedule' class="btn btn-primary btn-icon-split" sec:authorize="isAuthenticated()">
+       			<span class="text">Add Schedule</span>
+       		</button>
+       		<button data-oper='list' class="btn btn-info btn-icon-split">
+       			<span class="text">List</span>
+       		</button>
+       		<form id='operForm' action="/board/modify" method="get">
+       			<input type='hidden' id='bno' name='bno' th:value="${board.bno}">
+       		</form>
+        </div>
+	</div>
+	<div class="card shadow mb-4">
+		<div class="card-header py-3">
+        	<i class="fa fa-comments fa-fw"></i>Reply
+        </div>
+         <div class="card-body">
+			<div class="form-group">
+				<textarea class="form-control" id='reply' rows="3" placeholder="Leave comments here"></textarea>
+			</div>
+			<button id='replyRegisterBtn' type="submit" class="btn btn-success btn-icon-split fa-pull-right" sec:authorize="isAuthenticated()">
+				<span class="text"><i class="fa fa-share"></i> Register</span>
+			</button>
+		</div>
+		<hr>
+        <div class="card-body">
+        	<ul class="chat" style="list-style-type:none; padding-left:15px;">
+        	</ul>
+        	<div class="panel-footer">
+        	</div>
+        </div>
+	</div>
+</div>
+
+   <!-- Schedule Modal -->
+   <div class="modal fade" id="scheduleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+       <div class="modal-content">
+         <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+           <h4 class="modal-title" id="myModalLabel">REPLY MODAL</h4>
+         </div>
+         <div class="modal-body">
+           <div class="form-group">
+             <label>Title</label> 
+             <input class="form-control" name='title'>
+           </div>      
+           <div class="form-group">
+             <label>Writer</label> 
+             <input class="form-control" name='writer'>
+           </div>
+           <div class="form-group">
+             <label>Start time</label>
+             <div class="input-group date" id="modal_start_picker" data-target-input="nearest">
+                <input type="text" name="start" class="form-control datetimepicker-input" data-target="#modal_start_picker" required/>
+                <div class="input-group-append" data-target="#modal_start_picker" data-toggle="datetimepicker">
+                	<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+             	</div>
+             </div> 
+           </div>
+           <div class="form-group">
+             <label>End time</label> 
+              <div class="input-group date" id="modal_end_picker" data-target-input="nearest">
+                <input type="text" name="end" class="form-control datetimepicker-input" data-target="#modal_end_picker" required/>
+                <div class="input-group-append" data-target="#modal_end_picker" data-toggle="datetimepicker">
+                	<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+             	</div>
+             </div> 
+           </div>
+           <input type="hidden" name='sno'/>
+         </div>
+		<div class="modal-footer">
+			<button id='modalModBtn' type="button" class="btn btn-warning">Modify</button>
+		    <button id='modalRemoveBtn' type="button" class="btn btn-danger">Remove</button>
+		    <button id='modalCloseBtn' type="button" class="btn btn-default">Close</button>
+    	</div>          
+    </div>
+       <!-- /.modal-content -->
+     </div>
+     <!-- /.modal-dialog -->
+   </div>
+   <!-- /.modal -->
+   
+   
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function(){
+	
+	getSchedules();
+	
+	var operForm=$("#operForm");
+	
+	/*<![CDATA[*/ 
+		var bnoValue = /*[[ ${board.bno} ]]*/; 
+	/*]]>*/
+	
+	showList(1);
+		
+	$("button[data-oper='modify']").on("click",function(e){
+		operForm.attr("action","/board/modify").submit();
+	});
+	
+	$("button[data-oper='schedule']").on("click",function(e){
+		operForm.attr("action","/board/schedule").submit();
+	});
+	
+	$("button[data-oper='list']").on("click",function(e){
+		operForm.find("#bno").remove();
+		operForm.attr("action","/board/list");
+		operForm.submit();
+	});	
+
+</script>
+
+<link href='/fullcalendar/core/main.css' rel='stylesheet' />
+<link href='/fullcalendar/daygrid/main.css' rel='stylesheet' />
+<link href='/fullcalendar/timegrid/main.css' rel='stylesheet' />
+
+<script src='/fullcalendar/core/main.js'></script>
+<script src='/fullcalendar/daygrid/main.js'></script>
+<script src='/fullcalendar/timegrid/main.js'></script>
+
+<script type="text/javascript" src="/js/schedule.js"></script>
+<script type="text/javascript" th:inline="javascript">
+
+var modal = $("#scheduleModal");
+var modalInputSno = modal.find("input[name='sno']");
+var modalInputTitle = modal.find("input[name='title']");
+var modalInputWriter = modal.find("input[name='writer']");
+var modalInputStart = modal.find("input[name='start']");
+var modalInputEnd = modal.find("input[name='end']");
+var modalModBtn = $("#modalModBtn");
+var modalRemoveBtn = $("#modalRemoveBtn");
+var modalRegisterBtn = $("#modalRegisterBtn");
+var header = $("meta[name='_csrf_header']").attr("content");
+var token = $("meta[name='_csrf']").attr("content");
+
+$("#modalCloseBtn").on("click", function(e){
+	modal.modal('hide');
+});
+
+modalModBtn.on("click", function(e){    
+    scheduleService.update(
+    	{
+    		sno:modalInputSno.val(),
+    		title:modalInputTitle.val(),
+    		startTime:modalInputStart.val(),
+    		endTime:modalInputEnd.val(),
+    		csrf_header:header,
+			csrf_token:token
+    	}
+    	, 
+    	function(result){  
+      		alert(result);
+      		modal.modal("hide");
+      		location.reload();
+    	}
+    	,
+    	function(result){
+    		alert(result);
+    	}
+   	);
+});
+
+modalRemoveBtn.on("click", function(e){    
+    scheduleService.remove(
+       	{
+       		sno:modalInputSno.val(),
+       		csrf_header:header,
+   			csrf_token:token
+       	}
+       	, 
+       	function(result){  
+         		alert(result);
+         		modal.modal("hide");
+         		location.reload();
+       	}
+       	,
+       	function(result){
+       		alert(result);
+       	}
+	);
+});
+    
+function getSchedules() {
+	var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+		plugins: [ 'timeGrid' ],
+       	defaultView: 'timeGridWeek',
+       	header: {
+	       	left: 'prev,next today',
+	       	center: 'title',
+	       	right: 'timeGridWeek,timeGridDay'
+     	},
+      	minTime:"06:00:00",
+      	maxTime:"22:00:00",
+  		eventClick: function(info){
+  			
+  			$('#modal_start_picker').datetimepicker({
+  			    sideBySide: true,
+  			    stepping:30,
+  				defaultDate:info.event.start
+  			});
+  			$('#modal_end_picker').datetimepicker({
+  			    sideBySide: true,
+  			    stepping:30,
+  				defaultDate:info.event.end
+  			});
+  			
+  			modalInputSno.val(info.event.extendedProps.sno);
+  			modalInputTitle.val(info.event.title);
+  			modalInputWriter.val(info.event.extendedProps.writer).attr("readonly","readonly");
+  			modalInputStart.val(displayScheduleTime(info.event.start));
+  			modalInputEnd.val(displayScheduleTime(info.event.end));
+          
+          	modal.find("button[id !='modalCloseBtn']").hide();
+          	modalModBtn.show();
+          	modalRemoveBtn.show();
+          
+          	$("#scheduleModal").modal("show");
+             	                   
+       	},
+     	events:"/schedule/get"
+	});
+    
+    calendar.render();
+}
+	
+function displayScheduleTime(time){
+	var today=moment(new Date());
+	var gap=moment.duration(today.diff(time)).asHours()
+	var dateObj=new Date(time);
+			
+	return moment(time).format('MM/DD/YYYY h:mm:ss a');
+}
+</script>
+
+<th:block th:replace="includes/footer"></th:block>
+</html>

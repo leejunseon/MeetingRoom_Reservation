@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="practice.mapper.RoomMapper">
+
+	<select id="getList" resultType="practice.domain.RoomDto">
+		<![CDATA[
+			SELECT
+				RNO,NAME,MIN_TIME,MAX_TIME,WEEKEND
+			from(
+				SELECT /*+ INDEX_DESC(TBL_ROOM PK_ROOM) */
+					ROWNUM RN,RNO,NAME,MIN_TIME,MAX_TIME,WEEKEND
+				FROM
+				]]>
+				<choose>
+					<when test="orderNum==null">
+						TBL_ROOM
+					</when>
+					<when test="orderNum!=null">
+					(
+						SELECT /*+ INDEX_DESC(TBL_ROOM PK_ROOM) */
+                			ROWNUM RN,RNO,NAME,MIN_TIME,MAX_TIME,WEEKEND
+            			FROM
+                			TBL_ROOM
+                			<if test="search!=''">
+								 WHERE
+            						(RNO LIKE '%'||#{search}||'%' OR 
+            						 NAME LIKE '%'||#{search}||'%' OR 
+            						 WEEKEND LIKE '%'||#{search}||'%')
+							</if>
+	          				<choose>
+								<when test="orderNum!=null">
+									<choose>
+										<when test="orderNum=='0'.toString()">
+											ORDER BY RNO
+										</when>
+										<when test="orderNum=='1'.toString()">
+											ORDER BY NAME
+										</when>
+										<when test="orderNum=='2'.toString()">
+											ORDER BY MIN_TIME
+										</when>
+										<when test="orderNum=='3'.toString()">
+											ORDER BY MAX_TIME
+										</when>
+										<when test="orderNum=='4'.toString()">
+											ORDER BY WEEKEND
+										</when>
+									</choose>
+									
+									<choose>
+										<when test="orderDir=='asc'">
+											ASC
+										</when>
+										<when test="orderDir='desc'">
+											DESC
+										</when>
+									</choose>
+								</when>
+							</choose>
+						)
+					</when>
+				</choose>
+				<![CDATA[
+				WHERE ROWNUM<= #{start} + #{length}
+			)
+			WHERE RN> #{start}
+		]]>
+	</select>
+	
+	<insert id="insert">
+		<selectKey keyProperty="bno" order="BEFORE" resultType="long">
+			SELECT SEQ_BOARD.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO TBL_BOARD(BNO,TITLE,CONTENT,WRITER)
+		VALUES(#{bno},#{title},#{content},#{writer})
+	</insert>
+
+	<select id="read" resultType="practice.domain.RoomDto">
+		SELECT * FROM TBL_BOARD WHERE BNO=#{bno}
+	</select>
+	
+	<delete id="delete">
+		DELETE TBL_BOARD WHERE BNO=#{bno}
+	</delete>
+	
+	<update id="update">
+		UPDATE
+			TBL_BOARD
+		SET
+			TITLE=#{title},
+			CONTENT=#{content},
+			WRITER=#{writer},
+			UPDATEDATE=sysdate
+		WHERE
+			BNO=#{bno}
+	</update>
+	
+	<select id="getTotal" resultType="int">
+		SELECT COUNT(*) 
+		FROM TBL_ROOM
+		WHERE RNO>0
+	</select>
+	
+</mapper>
