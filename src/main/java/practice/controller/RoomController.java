@@ -62,4 +62,9 @@ public class RoomController {
 
 	}
 	
+	@GetMapping("/register")
+	public void register() throws Exception{
+
+	}
+	
 }

@@ -1,10 +1,7 @@
 package practice.domain;
 
-import java.util.Date;
 import java.util.List;
-
 import javax.validation.constraints.NotBlank;
-
 import lombok.Data;
 
 @Data
@@ -23,8 +20,6 @@ public class MemberDto {
 	private String email;
 	
 	private boolean enabled;
-	private Date regDate;
-	private Date updateDate;
 	private List<AuthDto> authList;
 	
 }
