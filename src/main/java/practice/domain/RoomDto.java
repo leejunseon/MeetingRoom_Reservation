@@ -1,6 +1,8 @@
 package practice.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 
@@ -9,7 +11,11 @@ public class RoomDto {
 	
 	private Long rno;
 	private String name;
-	private Date minTime;
-	private Date maxTime;
+	
+	@DateTimeFormat(pattern = "h:mm a")
+	private LocalDateTime minTime;
+	@DateTimeFormat(pattern = "h:mm a")
+	private LocalDateTime maxTime;
+	
 	private String weekend;
 }

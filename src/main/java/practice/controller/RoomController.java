@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.AllArgsConstructor;
 import practice.domain.BoardPagingDto;
@@ -65,6 +66,13 @@ public class RoomController {
 	@GetMapping("/register")
 	public void register() throws Exception{
 
+	}
+	
+	@PostMapping("/register")
+	public String register(RoomDto board,RedirectAttributes rttr) throws Exception{
+		service.register(board);
+		rttr.addFlashAttribute("result",board.getRno());
+		return "redirect:/board/list";
 	}
 	
 }
