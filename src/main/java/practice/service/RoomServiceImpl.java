@@ -8,17 +8,21 @@ import lombok.AllArgsConstructor;
 import practice.domain.BoardPagingDto;
 import practice.domain.RoomDto;
 import practice.mapper.RoomMapper;
+import practice.util.TimeTransformUtil;
 
 @Service
 @AllArgsConstructor
 public class RoomServiceImpl implements RoomService{
 
 	private RoomMapper mapper;
+	private TimeTransformUtil timeTransformer;
 	
 	@Override
-	public void register(RoomDto board) throws Exception{
+	public void register(RoomDto room) throws Exception{
 		// TODO Auto-generated method stub
-		mapper.insert(board);
+		room.setTransformedMinTime(timeTransformer.toInteger(room.getMinTime()));
+		room.setTransformedMaxTime(timeTransformer.toInteger(room.getMaxTime()));
+		mapper.insert(room);
 	}
 
 	@Override
@@ -42,7 +46,9 @@ public class RoomServiceImpl implements RoomService{
 	@Override
 	public List<RoomDto> getList(BoardPagingDto paging) throws Exception{
 		// TODO Auto-generated method stub
-		return mapper.getList(paging);
+		List<RoomDto> result=mapper.getList(paging);
+		
+		return result;
 	}
 
 	@Override

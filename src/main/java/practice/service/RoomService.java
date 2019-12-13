@@ -7,7 +7,7 @@ import practice.domain.RoomDto;
 
 public interface RoomService {
 	
-	public void register(RoomDto board) throws Exception;
+	public void register(RoomDto room) throws Exception;
 	
 	public RoomDto get(Long bno) throws Exception;
 	

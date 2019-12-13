@@ -69,11 +69,8 @@
 	</select>
 	
 	<insert id="insert">
-		<selectKey keyProperty="bno" order="BEFORE" resultType="long">
-			SELECT SEQ_BOARD.NEXTVAL FROM DUAL
-		</selectKey>
-		INSERT INTO TBL_BOARD(BNO,TITLE,CONTENT,WRITER)
-		VALUES(#{bno},#{title},#{content},#{writer})
+		INSERT INTO TBL_ROOM(RNO,NAME,TRANSFORMED_MIN_TIME,TRANSFORMED_MAX_TIME,WEEKEND)
+		VALUES(SEQ_ROOM.NEXTVAL,#{name},#{transformedMinTime},#{transformedMaxTime},#{weekend})
 	</insert>
 
 	<select id="read" resultType="practice.domain.RoomDto">

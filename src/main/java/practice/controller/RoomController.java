@@ -69,10 +69,10 @@ public class RoomController {
 	}
 	
 	@PostMapping("/register")
-	public String register(RoomDto board,RedirectAttributes rttr) throws Exception{
-		service.register(board);
-		rttr.addFlashAttribute("result",board.getRno());
-		return "redirect:/board/list";
+	public String register(RoomDto room,RedirectAttributes rttr) throws Exception{
+		service.register(room);
+		rttr.addFlashAttribute("result",room.getRno());
+		return "redirect:/room/list";
 	}
-	
+
 }

@@ -13,7 +13,7 @@ public interface RoomMapper {
 
 	public List<RoomDto> getList(BoardPagingDto paging) throws Exception;
 	
-	public void insert(RoomDto board) throws Exception;
+	public void insert(RoomDto room) throws Exception;
 	
 	public RoomDto read(Long bno) throws Exception;
 	
