@@ -6,10 +6,10 @@
 	<select id="getList" resultType="practice.domain.RoomDto">
 		<![CDATA[
 			SELECT
-				RNO,NAME,MIN_TIME,MAX_TIME,WEEKEND
+				RNO,NAME,TRANSFORMED_MIN_TIME,TRANSFORMED_MAX_TIME,WEEKEND
 			from(
 				SELECT /*+ INDEX_DESC(TBL_ROOM PK_ROOM) */
-					ROWNUM RN,RNO,NAME,MIN_TIME,MAX_TIME,WEEKEND
+					ROWNUM RN,RNO,NAME,TRANSFORMED_MIN_TIME,TRANSFORMED_MAX_TIME,WEEKEND
 				FROM
 				]]>
 				<choose>
@@ -19,7 +19,7 @@
 					<when test="orderNum!=null">
 					(
 						SELECT /*+ INDEX_DESC(TBL_ROOM PK_ROOM) */
-                			ROWNUM RN,RNO,NAME,MIN_TIME,MAX_TIME,WEEKEND
+                			ROWNUM RN,RNO,NAME,TRANSFORMED_MIN_TIME,TRANSFORMED_MAX_TIME,WEEKEND
             			FROM
                 			TBL_ROOM
                 			<if test="search!=''">
@@ -38,10 +38,10 @@
 											ORDER BY NAME
 										</when>
 										<when test="orderNum=='2'.toString()">
-											ORDER BY MIN_TIME
+											ORDER BY TRANSFORMED_MIN_TIME
 										</when>
 										<when test="orderNum=='3'.toString()">
-											ORDER BY MAX_TIME
+											ORDER BY TRANSFORMED_MAX_TIME
 										</when>
 										<when test="orderNum=='4'.toString()">
 											ORDER BY WEEKEND

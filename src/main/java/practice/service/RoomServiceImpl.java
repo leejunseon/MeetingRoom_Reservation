@@ -47,7 +47,10 @@ public class RoomServiceImpl implements RoomService{
 	public List<RoomDto> getList(BoardPagingDto paging) throws Exception{
 		// TODO Auto-generated method stub
 		List<RoomDto> result=mapper.getList(paging);
-		
+		for(RoomDto room:result) {
+			room.setMinTime(timeTransformer.toTime(room.getTransformedMinTime()));
+			room.setMaxTime(timeTransformer.toTime(room.getTransformedMaxTime()));
+		}
 		return result;
 	}
 

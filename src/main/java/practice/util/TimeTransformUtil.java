@@ -27,5 +27,28 @@ public class TimeTransformUtil {
 		return result;
 	}
 	
-	
+	public String toTime(int time) {
+		String result="";
+		
+		String ampm="";
+		if(time>=720) {
+			ampm="PM";
+			time-=720;
+		}else {
+			ampm="AM";
+		}
+		
+		String hour=Integer.toString(time/60);
+		if(hour.equals("0"))
+			hour="12";
+		if(hour.length()==1)
+			hour="0"+hour;
+		
+		String minute=Integer.toString(time%60);
+		if(minute.length()==1)
+			minute="0"+minute;
+		
+		result=hour+":"+minute+" "+ampm;
+		return result;
+	}
 }
