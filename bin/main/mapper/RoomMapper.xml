@@ -74,7 +74,7 @@
 	</insert>
 
 	<select id="read" resultType="practice.domain.RoomDto">
-		SELECT * FROM TBL_BOARD WHERE BNO=#{bno}
+		SELECT * FROM TBL_ROOM WHERE RNO=#{rno}
 	</select>
 	
 	<delete id="delete">

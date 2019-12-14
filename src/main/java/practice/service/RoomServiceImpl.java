@@ -26,9 +26,12 @@ public class RoomServiceImpl implements RoomService{
 	}
 
 	@Override
-	public RoomDto get(Long bno) throws Exception{
+	public RoomDto get(Long rno) throws Exception{
 		// TODO Auto-generated method stub
-		return mapper.read(bno);
+		RoomDto room=mapper.read(rno);
+		room.setMinTime(timeTransformer.toTime(room.getTransformedMinTime()));
+		room.setMaxTime(timeTransformer.toTime(room.getTransformedMaxTime()));
+		return room;
 	}
 
 	@Override

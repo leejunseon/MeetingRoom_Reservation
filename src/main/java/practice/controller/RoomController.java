@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,4 +76,8 @@ public class RoomController {
 		return "redirect:/room/list";
 	}
 
+	@GetMapping({"/get","/modify"})
+	public void get(Long rno,Model model) throws Exception{
+		model.addAttribute("room",service.get(rno));
+	}
 }

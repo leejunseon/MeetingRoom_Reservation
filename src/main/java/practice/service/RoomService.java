@@ -9,7 +9,7 @@ public interface RoomService {
 	
 	public void register(RoomDto room) throws Exception;
 	
-	public RoomDto get(Long bno) throws Exception;
+	public RoomDto get(Long rno) throws Exception;
 	
 	public boolean modify(RoomDto board) throws Exception;
 	

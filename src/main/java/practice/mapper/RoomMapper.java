@@ -15,7 +15,7 @@ public interface RoomMapper {
 	
 	public void insert(RoomDto room) throws Exception;
 	
-	public RoomDto read(Long bno) throws Exception;
+	public RoomDto read(Long rno) throws Exception;
 	
 	public int delete(Long bno) throws Exception;
 	
