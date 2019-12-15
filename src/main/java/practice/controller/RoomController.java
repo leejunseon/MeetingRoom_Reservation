@@ -73,11 +73,20 @@ public class RoomController {
 	public String register(RoomDto room,RedirectAttributes rttr) throws Exception{
 		service.register(room);
 		rttr.addFlashAttribute("result",room.getRno());
+		rttr.addFlashAttribute("process","등록");
 		return "redirect:/room/list";
 	}
 
 	@GetMapping({"/get","/modify"})
 	public void get(Long rno,Model model) throws Exception{
 		model.addAttribute("room",service.get(rno));
+	}
+	
+	@PostMapping("/modify")
+	public String modify(RoomDto room,RedirectAttributes rttr) throws Exception{
+		service.modify(room);
+		rttr.addFlashAttribute("result",room.getRno());
+		rttr.addFlashAttribute("process","수정");
+		return "redirect:/room/list";
 	}
 }

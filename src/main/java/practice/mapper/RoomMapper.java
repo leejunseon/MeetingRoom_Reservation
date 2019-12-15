@@ -19,7 +19,7 @@ public interface RoomMapper {
 	
 	public int delete(Long bno) throws Exception;
 	
-	public int update(RoomDto board) throws Exception;
+	public int update(RoomDto room) throws Exception;
 
 	public int getTotal() throws Exception;
 	

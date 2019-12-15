@@ -11,7 +11,7 @@ public interface RoomService {
 	
 	public RoomDto get(Long rno) throws Exception;
 	
-	public boolean modify(RoomDto board) throws Exception;
+	public boolean modify(RoomDto room) throws Exception;
 	
 	public boolean remove(Long bno) throws Exception;
 	

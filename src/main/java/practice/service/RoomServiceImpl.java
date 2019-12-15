@@ -35,9 +35,11 @@ public class RoomServiceImpl implements RoomService{
 	}
 
 	@Override
-	public boolean modify(RoomDto board) throws Exception{
+	public boolean modify(RoomDto room) throws Exception{
 		// TODO Auto-generated method stub
-		return mapper.update(board)==1;
+		room.setTransformedMinTime(timeTransformer.toInteger(room.getMinTime()));
+		room.setTransformedMaxTime(timeTransformer.toInteger(room.getMaxTime()));
+		return mapper.update(room)==1;
 	}
 
 	@Override

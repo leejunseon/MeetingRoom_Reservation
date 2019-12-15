@@ -76,6 +76,10 @@
 			var result = /*[[ ${result} ]]*/; 
 		/*]]>*/
 		
+		/*<![CDATA[*/ 
+			var process = /*[[ ${process} ]]*/; 
+		/*]]>*/
+		
 		checkModal(result);
 		
 		history.replaceState({},null,null);
@@ -84,7 +88,7 @@
 			if(result===null||history.state)
 				return
 			if(parseInt(result)>0){
-				$(".modal-body").html("寃뚯떆湲� "+parseInt(result)+" 踰덉씠 �벑濡앸릺�뿀�뒿�땲�떎.");
+				$(".modal-body").html(parseInt(result)+"번 회의실 "+process+" 완료되었습니다.");
 			}
 			
 			$("#myModal").modal("show");

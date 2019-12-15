@@ -69,8 +69,11 @@
 	</select>
 	
 	<insert id="insert">
+		<selectKey keyProperty="rno" order="BEFORE" resultType="long">
+			SELECT SEQ_ROOM.NEXTVAL FROM DUAL
+		</selectKey>
 		INSERT INTO TBL_ROOM(RNO,NAME,TRANSFORMED_MIN_TIME,TRANSFORMED_MAX_TIME,WEEKEND)
-		VALUES(SEQ_ROOM.NEXTVAL,#{name},#{transformedMinTime},#{transformedMaxTime},#{weekend})
+		VALUES(#{rno},#{name},#{transformedMinTime},#{transformedMaxTime},#{weekend})
 	</insert>
 
 	<select id="read" resultType="practice.domain.RoomDto">
@@ -83,14 +86,14 @@
 	
 	<update id="update">
 		UPDATE
-			TBL_BOARD
+			TBL_ROOM
 		SET
-			TITLE=#{title},
-			CONTENT=#{content},
-			WRITER=#{writer},
-			UPDATEDATE=sysdate
+			NAME=#{name},
+			TRANSFORMED_MIN_TIME=#{transformedMinTime},
+			TRANSFORMED_MAX_TIME=#{transformedMaxTime},
+			WEEKEND=#{weekend}
 		WHERE
-			BNO=#{bno}
+			RNO=#{rno}
 	</update>
 	
 	<select id="getTotal" resultType="int">
