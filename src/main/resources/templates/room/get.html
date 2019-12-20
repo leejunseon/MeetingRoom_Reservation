@@ -107,7 +107,7 @@
 <script type="text/javascript" th:inline="javascript">
 $(document).ready(function(){
 	
-	//getSchedules();
+	getSchedules();
 	
 	var operForm=$("#operForm");
 			
@@ -134,7 +134,7 @@ $(document).ready(function(){
 <script src='/fullcalendar/core/main.js'></script>
 <script src='/fullcalendar/daygrid/main.js'></script>
 <script src='/fullcalendar/timegrid/main.js'></script>
-<!-- 
+
 <script type="text/javascript" src="/js/schedule.js"></script>
 <script type="text/javascript" th:inline="javascript">
 
@@ -249,6 +249,5 @@ function displayScheduleTime(time){
 	return moment(time).format('MM/DD/YYYY h:mm:ss a');
 }
 </script>
- -->
 <th:block th:replace="includes/footer"></th:block>
 </html>
