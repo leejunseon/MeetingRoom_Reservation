@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class CommonController {
 	
-	@GetMapping("/accessError")
+	@GetMapping("/customAccessError")
 	public void accessDenied(Authentication auth,Model model) {
 		model.addAttribute("msg","AccessDenied");
 	}

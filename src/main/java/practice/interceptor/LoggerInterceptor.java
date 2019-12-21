@@ -16,7 +16,9 @@ public class LoggerInterceptor extends HandlerInterceptorAdapter{
 		if(request.getRequestURI().contains("room")||
 				request.getRequestURI().contains("replies")||
 				request.getRequestURI().contains("member")||
-				request.getRequestURI().contains("mail")) {
+				request.getRequestURI().contains("mail")||
+				request.getRequestURI().contains("schedules")||
+				request.getRequestURI().contains("custom")) {
 			log.debug("==============================================START==============================================");
 			log.debug(" Request URI \t: "+request.getRequestURI());
 		}
@@ -28,7 +30,9 @@ public class LoggerInterceptor extends HandlerInterceptorAdapter{
 		if(request.getRequestURI().contains("room")||
 				request.getRequestURI().contains("replies")||
 				request.getRequestURI().contains("member")||
-				request.getRequestURI().contains("mail")) {
+				request.getRequestURI().contains("mail")||
+				request.getRequestURI().contains("schedules")||
+				request.getRequestURI().contains("custom")) {
 			log.debug("===============================================END===============================================");
 		}
 	}

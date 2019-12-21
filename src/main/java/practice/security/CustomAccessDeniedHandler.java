@@ -19,7 +19,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler{
 			AccessDeniedException accessDeniedException) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		log.error("Access Denied");
-		response.sendRedirect("/accessError");
+		response.sendRedirect("/customAccessError");
 	}
 
 }
