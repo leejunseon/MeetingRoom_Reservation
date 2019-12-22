@@ -91,10 +91,8 @@
            </div>
            <input type="hidden" name='sno'/>
          </div>
-		<div class="modal-footer">
-			<button id='modalModBtn' type="button" class="btn btn-warning">Modify</button>
-		    <button id='modalRemoveBtn' type="button" class="btn btn-danger">Remove</button>
-		    <button id='modalCloseBtn' type="button" class="btn btn-default">Close</button>
+		<div class="modal-footer" id="buttons">
+			
     	</div>          
     </div>
        <!-- /.modal-content -->
@@ -115,15 +113,12 @@ $(document).ready(function(){
 		operForm.attr("action","/room/modify").submit();
 	});
 	
-	$("button[data-oper='schedule']").on("click",function(e){
-		operForm.attr("action","/room/schedule").submit();
-	});
-	
 	$("button[data-oper='list']").on("click",function(e){
 		operForm.find("#rno").remove();
 		operForm.attr("action","/room/list");
 		operForm.submit();
 	});	
+
 });
 </script>
 
@@ -150,32 +145,41 @@ var modalRegisterBtn = $("#modalRegisterBtn");
 var header = $("meta[name='_csrf_header']").attr("content");
 var token = $("meta[name='_csrf']").attr("content");
 
+$("button[data-oper='schedule']").on("click",function(e){
+	/* <button id='modalModBtn' type='button' class='btn btn-warning'>Modify</button>
+    <button id='modalRemoveBtn' type="button" class="btn btn-danger">Remove</button>
+    <button id='modalCloseBtn' type="button" class="btn btn-default">Close</button> */
+	$("#buttons").html("<button id='modalModBtn' type='button' class='btn btn-warning'>Modify</button>");
+    modalModBtn = $("#modalModBtn");
+    modalModBtn.on("click", function(e){    
+        scheduleService.update(
+        	{
+        		sno:modalInputSno.val(),
+        		title:modalInputTitle.val(),
+        		startTime:modalInputStart.val(),
+        		endTime:modalInputEnd.val(),
+        		csrf_header:header,
+    			csrf_token:token
+        	}
+        	, 
+        	function(result){  
+          		alert(result);
+          		modal.modal("hide");
+          		location.reload();
+        	}
+        	,
+        	function(result){
+        		alert(result);
+        	}
+       	);
+    });
+	$("#scheduleModal").modal("show");
+});
+
 $("#modalCloseBtn").on("click", function(e){
 	modal.modal('hide');
 });
 
-modalModBtn.on("click", function(e){    
-    scheduleService.update(
-    	{
-    		sno:modalInputSno.val(),
-    		title:modalInputTitle.val(),
-    		startTime:modalInputStart.val(),
-    		endTime:modalInputEnd.val(),
-    		csrf_header:header,
-			csrf_token:token
-    	}
-    	, 
-    	function(result){  
-      		alert(result);
-      		modal.modal("hide");
-      		location.reload();
-    	}
-    	,
-    	function(result){
-    		alert(result);
-    	}
-   	);
-});
 
 modalRemoveBtn.on("click", function(e){    
     scheduleService.remove(
