@@ -132,7 +132,9 @@ $(document).ready(function(){
 
 <script type="text/javascript" src="/js/schedule.js"></script>
 <script type="text/javascript" th:inline="javascript">
-
+/*<![CDATA[*/ 
+	var rno = /*[[ ${room.rno} ]]*/; 
+/*]]>*/
 var modal = $("#scheduleModal");
 var modalInputSno = modal.find("input[name='sno']");
 var modalInputTitle = modal.find("input[name='title']");
@@ -141,20 +143,22 @@ var modalInputStart = modal.find("input[name='start']");
 var modalInputEnd = modal.find("input[name='end']");
 var modalModBtn = $("#modalModBtn");
 var modalRemoveBtn = $("#modalRemoveBtn");
-var modalRegisterBtn = $("#modalRegisterBtn");
+var modalRegisterBtn;
 var header = $("meta[name='_csrf_header']").attr("content");
 var token = $("meta[name='_csrf']").attr("content");
 
+//add schedule
 $("button[data-oper='schedule']").on("click",function(e){
-	/* <button id='modalModBtn' type='button' class='btn btn-warning'>Modify</button>
-    <button id='modalRemoveBtn' type="button" class="btn btn-danger">Remove</button>
-    <button id='modalCloseBtn' type="button" class="btn btn-default">Close</button> */
-	$("#buttons").html("<button id='modalModBtn' type='button' class='btn btn-warning'>Modify</button>");
-    modalModBtn = $("#modalModBtn");
-    modalModBtn.on("click", function(e){    
+	$("#buttons").html("<button id='modalRegisterBtn' type='button' class='btn btn-warning'>Register</button>"+
+						"<button id='modalCloseBtn' type='button' class='btn btn-default'>Close</button>");
+	
+	modalRegisterBtn = $("#modalRegisterBtn");
+	
+	modalRegisterBtn.on("click", function(e){    
         scheduleService.update(
         	{
-        		sno:modalInputSno.val(),
+        		rno:rno.val(),
+        		booker:modalInputWriter.val(),
         		title:modalInputTitle.val(),
         		startTime:modalInputStart.val(),
         		endTime:modalInputEnd.val(),

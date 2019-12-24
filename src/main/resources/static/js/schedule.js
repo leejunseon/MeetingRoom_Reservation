@@ -2,6 +2,30 @@ console.log("Schedule js Module");
 
 var scheduleService=(function(){	
 	
+	function add(schedule,callback,error){
+		console.log("scheduleService.add");
+		console.log(schedule);
+		
+		$.ajax({
+			type:'post',
+			url:'/schedule/add',
+			data:schedule,
+			beforeSend: function(xhr){
+                xhr.setRequestHeader(schedule.csrf_header, schedule.csrf_token);
+            },
+			success:function(result,status,xhr){
+				if(callback){
+					callback(result);
+				}
+			},
+			error:function(xhr,status,er){
+				if(error){
+					error(status);
+				}
+			}
+		});
+	}
+	
 	function remove(schedule,callback,error){
 		console.log("scheduleService.remove");
 		console.log(schedule);
@@ -51,6 +75,7 @@ var scheduleService=(function(){
 	}
 	
 	return {
+		add:add,
 		remove:remove,
 		update:update
 	};	
