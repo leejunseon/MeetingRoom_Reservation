@@ -54,25 +54,35 @@
 	</div>
 </div>
 
-   <!-- Schedule Modal -->
-   <div class="modal fade" id="scheduleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+   <!-- Add Schedule Modal -->
+   <div class="modal fade" id="addScheduleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
      <div class="modal-dialog">
        <div class="modal-content">
          <div class="modal-header">
+           <h4 class="modal-title" id="myModalLabel">스케줄 추가</h4>
            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-           <h4 class="modal-title" id="myModalLabel">REPLY MODAL</h4>
          </div>
          <div class="modal-body">
            <div class="form-group">
-             <label>Title</label> 
-             <input class="form-control" name='title'>
+             <label>제목</label> 
+             <input class="form-control" name='title' required>
            </div>      
            <div class="form-group">
-             <label>Writer</label> 
-             <input class="form-control" name='writer'>
+             <label>예약자</label> 
+             <input class="form-control" name='writer' required>
            </div>
            <div class="form-group">
-             <label>Start time</label>
+             <label>날짜</label>
+             <div class="input-group date" id="modal_date_picker" data-target-input="nearest">
+                <input type="text" name="start" class="form-control datetimepicker-input" data-target="#modal_date_picker" required/>
+                <div class="input-group-append" data-target="#modal_date_picker" data-toggle="datetimepicker">
+                	<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+             	</div>
+             </div> 
+           </div>
+           <div class="form-group">
+             <label>시작 시간</label>
              <div class="input-group date" id="modal_start_picker" data-target-input="nearest">
                 <input type="text" name="start" class="form-control datetimepicker-input" data-target="#modal_start_picker" required/>
                 <div class="input-group-append" data-target="#modal_start_picker" data-toggle="datetimepicker">
@@ -81,7 +91,7 @@
              </div> 
            </div>
            <div class="form-group">
-             <label>End time</label> 
+             <label>끝나는 시간</label> 
               <div class="input-group date" id="modal_end_picker" data-target-input="nearest">
                 <input type="text" name="end" class="form-control datetimepicker-input" data-target="#modal_end_picker" required/>
                 <div class="input-group-append" data-target="#modal_end_picker" data-toggle="datetimepicker">
@@ -89,17 +99,68 @@
              	</div>
              </div> 
            </div>
-           <input type="hidden" name='sno'/>
+          </div>
+		  <div class="modal-footer">
+			<button id='modalRegisterBtn' type='button' class='btn btn-primary'>등록</button>
+			<button id='modalCloseBtn' type='button' class='btn btn-light'>취소</button>
+	      </div>          
+      	</div>
+   	  </div>
+   	</div>
+   	
+   	<!-- Modify Schedule Modal -->
+   <div class="modal fade" id="modifyScheduleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title" id="myModalLabel">스케줄 수정</h4>
+           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
          </div>
-		<div class="modal-footer" id="buttons">
-			
-    	</div>          
-    </div>
-       <!-- /.modal-content -->
-     </div>
-     <!-- /.modal-dialog -->
-   </div>
-   <!-- /.modal -->
+         <div class="modal-body">
+           <div class="form-group">
+             <label>제목</label> 
+             <input class="form-control" name='title' required>
+           </div>      
+           <div class="form-group">
+             <label>예약자</label> 
+             <input class="form-control" name='writer' required>
+           </div>
+           <div class="form-group">
+             <label>날짜</label>
+             <div class="input-group date" id="modal_date_picker" data-target-input="nearest">
+                <input type="text" name="start" class="form-control datetimepicker-input" data-target="#modal_date_picker" required/>
+                <div class="input-group-append" data-target="#modal_date_picker" data-toggle="datetimepicker">
+                	<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+             	</div>
+             </div> 
+           </div>
+           <div class="form-group">
+             <label>시작 시간</label>
+             <div class="input-group date" id="modal_start_picker" data-target-input="nearest">
+                <input type="text" name="start" class="form-control datetimepicker-input" data-target="#modal_start_picker" required/>
+                <div class="input-group-append" data-target="#modal_start_picker" data-toggle="datetimepicker">
+                	<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+             	</div>
+             </div> 
+           </div>
+           <div class="form-group">
+             <label>끝나는 시간</label> 
+              <div class="input-group date" id="modal_end_picker" data-target-input="nearest">
+                <input type="text" name="end" class="form-control datetimepicker-input" data-target="#modal_end_picker" required/>
+                <div class="input-group-append" data-target="#modal_end_picker" data-toggle="datetimepicker">
+                	<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+             	</div>
+             </div> 
+           </div>
+          </div>
+		  <div class="modal-footer">
+			<button id='modalModifyBtn' type='button' class='btn btn-warning'>수정</button>
+			<button id='modalRemoveBtn' type='button' class='btn btn-danger'>삭제</button>
+			<button id='modalCloseBtn' type='button' class='btn btn-light'>취소</button>
+	      </div>          
+      	</div>
+   	  </div>
+   	</div>
    
    
 <script type="text/javascript" th:inline="javascript">
@@ -118,7 +179,19 @@ $(document).ready(function(){
 		operForm.attr("action","/room/list");
 		operForm.submit();
 	});	
-
+	
+	$('#modal_date_picker').datetimepicker({
+		format: 'L'
+	});
+	$('#modal_start_picker').datetimepicker({
+		format: 'LT',
+    	stepping:30
+	});
+	$('#modal_end_picker').datetimepicker({
+		format: 'LT',
+    	stepping:30
+	});
+	
 });
 </script>
 
@@ -135,55 +208,52 @@ $(document).ready(function(){
 /*<![CDATA[*/ 
 	var rno = /*[[ ${room.rno} ]]*/; 
 /*]]>*/
-var modal = $("#scheduleModal");
-var modalInputSno = modal.find("input[name='sno']");
+
+var addModal = $("#addScheduleModal");
+var modifyModal = $("#modifyScheduleModal");
+/* var modalInputSno = modal.find("input[name='sno']");
 var modalInputTitle = modal.find("input[name='title']");
 var modalInputWriter = modal.find("input[name='writer']");
 var modalInputStart = modal.find("input[name='start']");
-var modalInputEnd = modal.find("input[name='end']");
+var modalInputEnd = modal.find("input[name='end']"); */
 var modalModBtn = $("#modalModBtn");
 var modalRemoveBtn = $("#modalRemoveBtn");
-var modalRegisterBtn;
+var modalRegisterBtn = $("#addScheduleModal");
 var header = $("meta[name='_csrf_header']").attr("content");
 var token = $("meta[name='_csrf']").attr("content");
 
 //add schedule
 $("button[data-oper='schedule']").on("click",function(e){
-	$("#buttons").html("<button id='modalRegisterBtn' type='button' class='btn btn-warning'>Register</button>"+
-						"<button id='modalCloseBtn' type='button' class='btn btn-default'>Close</button>");
-	
-	modalRegisterBtn = $("#modalRegisterBtn");
-	
-	modalRegisterBtn.on("click", function(e){    
-        scheduleService.update(
-        	{
-        		rno:rno.val(),
-        		booker:modalInputWriter.val(),
-        		title:modalInputTitle.val(),
-        		startTime:modalInputStart.val(),
-        		endTime:modalInputEnd.val(),
-        		csrf_header:header,
-    			csrf_token:token
-        	}
-        	, 
-        	function(result){  
-          		alert(result);
-          		modal.modal("hide");
-          		location.reload();
-        	}
-        	,
-        	function(result){
-        		alert(result);
-        	}
-       	);
-    });
-	$("#scheduleModal").modal("show");
+	$("#addScheduleModal").modal("show");
 });
 
 $("#modalCloseBtn").on("click", function(e){
 	modal.modal('hide');
 });
 
+modalRegisterBtn.on("click", function(e){    
+    scheduleService.update(
+    	{
+    		rno:rno.val(),
+    		booker:modalInputWriter.val(),
+    		title:modalInputTitle.val(),
+    		startTime:modalInputStart.val(),
+    		endTime:modalInputEnd.val(),
+    		csrf_header:header,
+			csrf_token:token
+    	}
+    	, 
+    	function(result){  
+      		alert(result);
+      		modal.modal("hide");
+      		location.reload();
+    	}
+    	,
+    	function(result){
+    		alert(result);
+    	}
+   	);
+});
 
 modalRemoveBtn.on("click", function(e){    
     scheduleService.remove(
@@ -215,20 +285,10 @@ function getSchedules() {
 	       	center: 'title',
 	       	right: 'timeGridWeek,timeGridDay'
      	},
-      	minTime:"06:00:00",
-      	maxTime:"22:00:00",
-  		eventClick: function(info){
-  			
-  			$('#modal_start_picker').datetimepicker({
-  			    sideBySide: true,
-  			    stepping:30,
-  				defaultDate:info.event.start
-  			});
-  			$('#modal_end_picker').datetimepicker({
-  			    sideBySide: true,
-  			    stepping:30,
-  				defaultDate:info.event.end
-  			});
+     	height:595,
+      	minTime:"09:00:00",
+      	maxTime:"18:00:00",
+  		eventClick: function(info){  			
   			
   			modalInputSno.val(info.event.extendedProps.sno);
   			modalInputTitle.val(info.event.title);
