@@ -20,8 +20,10 @@ public class CustomUserDetailsService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
+		
 		log.warn("Load user by username : "+username);
 		MemberDto vo=memberMapper.read(username);
+		
 		log.warn("Queried by member mapper : "+vo);
 		return vo==null?null:new CustomUser(vo);
 	}

@@ -1,20 +1,19 @@
 package practice.domain;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-
 import lombok.Data;
 
 @Data
 public class ScheduleDto {
 
-	private int bno;
+	private int rno;
 	private int sno;
 	private String writer;
 	private String title;
-	private Date startTime;
-	private Date endTime;
-	private LocalDateTime start;
-	private LocalDateTime end;
+	private String sDate;
+	private String startTime;
+	private String endTime;
+	
+	private String start;
+	private String end;
 	
 }

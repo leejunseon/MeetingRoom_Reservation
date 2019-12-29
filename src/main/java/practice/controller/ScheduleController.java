@@ -29,7 +29,7 @@ public class ScheduleController {
 	public String add(ScheduleDto schedule,RedirectAttributes rttr) throws Exception{
 		service.add(schedule);
 		rttr.addFlashAttribute("result",schedule.getTitle());
-		return "redirect:/board/get?bno="+schedule.getBno();
+		return "redirect:/room/get?rno="+schedule.getRno();
 	}
 	
 	@GetMapping(value="/get", produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
