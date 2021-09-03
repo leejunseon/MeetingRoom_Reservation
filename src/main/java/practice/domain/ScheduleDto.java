@@ -7,7 +7,6 @@ public class ScheduleDto {
 
 	private int rno;
 	private int sno;
-	private int bno;
 	private String writer;
 	private String title;
 	private String sDate;
